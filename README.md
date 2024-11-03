@@ -2,16 +2,15 @@
 Exploring the AWS services for creating ETL pipeline for sales data of a e-commerce data.
 AWS serveces covered includes 
 1. Amazon S3 Bucket.
-2. AWS Glue
-   2.1 AWS Glue Catalog
-   2.2 AWS Glue Crawler.
-   2.3 AWS Glue ETL jobs.
+2. AWS Glue <br>
+   2.1 AWS Glue Catalog <br>
+   2.2 AWS Glue Crawler. <br>
+   2.3 AWS Glue ETL jobs. <br>
 3. AWS IAM roles/users.
 4. AWS Athena.
 
-THe Outline of Project looks like:
+The Outline of Project looks like:
 ***
-
 ![Screenshot 2024-11-02 191506](https://github.com/user-attachments/assets/db1ee01f-7805-445a-a9aa-b1969207df77)
 ***
 
@@ -37,6 +36,8 @@ I followed this structure
 >> sales-database              (Folder)
 >>> raw-sales-data             (Folder)
 >>>> raw.csv                   (File)
+
+Also create a folder (transformed-data) at same level of raw-sales-data for storing transformed data from etl job.
 ***
 ![image](https://github.com/user-attachments/assets/80eae1dc-7b75-4870-bee4-9487f09d22c1)
 ***
@@ -49,11 +50,8 @@ _In sales-database, we have to folders, one for raw data and other for transform
 ***
 ## Step 2: Creating a IAM role for the project.
 Go to AWS IAM → Roles → Create Role
-
 Use cases for other AWS services : Select Glue
-
 Add Permissions Policies : Search and Select ‘S3 full access’, 'Aws Glue Service Role'
-
 Role name : Appropiate Name _(‘aws-sales-data-role’ for me)_ .
 
 ***
@@ -62,7 +60,7 @@ Role name : Appropiate Name _(‘aws-sales-data-role’ for me)_ .
 ***
 ## Step 3: Glue Catalog and Glue Crawler.
 ### 3.1 Go to Glue → Glue Catalog →  Database → Add Database.
-    Give an appropiate name for the data base. (Sales-database).
+Give an appropiate name for the data base. (Sales-database).
 
 ***
 ![image](https://github.com/user-attachments/assets/38ccc001-34f5-4442-84a3-ace2ff997eca)
@@ -70,12 +68,12 @@ Role name : Appropiate Name _(‘aws-sales-data-role’ for me)_ .
 ***
 ### 3.2 In Glue Catalog → Databases → Tables.
     Use Add table suing Crawler. <br>
-   * [x] Step1 → Name : Appropiate name _(crawler-sales for me)._ <br>
-  * [x]  Step2 → Add a data source → Choose the location of raw.csv file. <br>
-  * [x]  Step3 → Choose IAM role that we created previously. <br>
- * [x]   Step4 → Choose Data Base that we created perviously. <br>
+* [x] Step1 → Name : Appropiate name _(crawler-sales for me)._ <br>
+* [x]  Step2 → Add a data source → Choose the location of raw.csv file. <br>
+* [x]  Step3 → Choose IAM role that we created previously. <br>
+* [x]   Step4 → Choose Data Base that we created perviously. <br>
             For Scheduling → On demand. <br>
-    _Note: No need to worry about the name for table. It will be populated uisng the same name of choosen file._
+_Note: No need to worry about the name for table. It will be populated uisng the same name of choosen file._
     
 ***
 ![image](https://github.com/user-attachments/assets/d3bcb186-3d25-4811-9e38-029ee1cd95e5)
@@ -90,8 +88,72 @@ Once the run was sucessful, table will be populated. Go to tables section and ve
 ![image](https://github.com/user-attachments/assets/316a2d7d-9516-4b5d-be97-fcb0cee66d59)
 
 ***
+## Step 4: Creating ETL job using Glue.
+Go to glue ETl jobs → Choose Visual ETl (you can also choose Notebook or Script).
+Go to Job Details: <br>
+Name:  give appropiate name _('rawdata-transform' for me)_. <br>
+IAM role : Choose the one we created earlier. <br>
+Other settings as default. <br>
+
+At visual section, <br>
+### Node 1:Source
+source: AWS Glue data Catalog. <br>
+_(double click on the Node to edit properities)_.
+#### Properties:
+Database: Choose the one we created earlies. _('Sales-database' for me)_. <br>
+Table_name: choose the one created. _('raw_sales_data' for me).
+
+### Node 2:
+Add another node → "Transforms" <br>
+Choose Change Schema <br>
+#### Properties:
+Node parent → Glue data catalog. <br>
+Change Schema →:
+date(column) to datetype<br>
+time(cloumn) to timestamp<br>
+Quantity(column) to int<br>
+Price, tax, total_amount(columns) to float.
+
+### Node 3:Target
+Choose Amazon S3. <br>
+#### Properties:
+Node parent: Change Schema <br>
+Format: parquet <br>
+Compression type: Snappy<br>
+S3 target Location: path to transformed-data folder.
+(optioanl) partition 1: branch
+(optioanl) partition 2; order_status
 
 
+***
+![image](https://github.com/user-attachments/assets/d89c3022-c3eb-4e9d-a0ea-ff8f2689c9ee)
+
+***
+Save and run the job.<br>
+Once the job run was sucessfull, go to s3 and check the transformeddata folder.
+
+## Step 5: Creating/populating table for transformed data.
+Follow the step3.2 to create a cralwer and run the crawler to create a table for transformed data. <br>
+_ remmember to store the table in same database where raw-sales-data is stored._
+
+*** 
+![image](https://github.com/user-attachments/assets/7f5afe58-c11f-4232-9509-6849fe19d488)
+***
 
 
+## Step 5: Query at Athena
+Go to Athena. <br>
+DataSource : Glue data catalog. <br>
+Database: Sales-Database.<br>
+Now you can see two tables from the database and you can use sql queries on these tables.
+***
+![image](https://github.com/user-attachments/assets/34b2b87b-c3c1-4869-bfb4-a7248435b0cc)
+
+***
+
+With that we are done with the project.<br>
+If find useful and feel worthy for the time spent you can upvote
+
+
+ 
   
