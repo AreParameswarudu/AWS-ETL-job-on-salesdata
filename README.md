@@ -67,7 +67,7 @@ Give an appropiate name for the data base. (Sales-database).
 
 ***
 ### 3.2 In Glue Catalog → Databases → Tables.
-    Use Add table suing Crawler. <br>
+Use Add table suing Crawler. <br>
 * [x] Step1 → Name : Appropiate name _(crawler-sales for me)._ <br>
 * [x]  Step2 → Add a data source → Choose the location of raw.csv file. <br>
 * [x]  Step3 → Choose IAM role that we created previously. <br>
@@ -133,8 +133,9 @@ Save and run the job.<br>
 Once the job run was sucessfull, go to s3 and check the transformeddata folder.
 
 ## Step 5: Creating/populating table for transformed data.
-Follow the step3.2 to create a cralwer and run the crawler to create a table for transformed data. <br>
-_ remmember to store the table in same database where raw-sales-data is stored._
+Follow the step3.2 to create a cralwer.<br>
+Run the crawler to create a table for transformed data. <br>
+_remmember to store the table in same database where raw-sales-data is stored._
 
 *** 
 ![image](https://github.com/user-attachments/assets/7f5afe58-c11f-4232-9509-6849fe19d488)
