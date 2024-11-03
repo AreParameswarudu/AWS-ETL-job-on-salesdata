@@ -153,7 +153,7 @@ Now you can see two tables from the database and you can use sql queries on thes
 ***
 
 With that we are done with the project.<br>
-If find useful and feel worthy for the time spent you can upvote
+Feel free to suggest changes (or even in better words) for improvement.
 
 
  
