@@ -1,6 +1,6 @@
 # AWS-ETL-job-on-salesdata
-Exploring the AWS services for creating ETL pipeline for sales data of a e-commerce data.
-AWS serveces covered includes 
+Exploring the AWS services for creating ETL pipeline for sales data of a e-commerce data.  
+AWS services covered includes 
 1. Amazon S3 Bucket.
 2. AWS Glue <br>
    2.1 AWS Glue Catalog <br>
